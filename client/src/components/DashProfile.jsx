@@ -18,6 +18,7 @@ import {
   deleteUserStart,
   deleteUserSuccess,
   deleteUserFailure,
+  signoutSuccess,
 } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
@@ -73,6 +74,7 @@ export default function DashProfile() {
 
         setImageFileUploadProgress(progress.toFixed(0));
       },
+      // eslint-disable-next-line no-unused-vars
       (error) => {
         setImageFileUploadError(
           "Impossibile caricare l'immagine - File max 2 MB"
@@ -135,10 +137,10 @@ export default function DashProfile() {
     setShowModal(false);
     try {
       dispatch(deleteUserStart());
-      const res = await fetch(`/api/user/delete/${currentUser._id}`,{
-        method:'DELETE',
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
       });
-      const data=await res.json();
+      const data = await res.json();
       if (!res.ok) {
         dispatch(deleteUserFailure(data.message));
       } else {
@@ -147,7 +149,23 @@ export default function DashProfile() {
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
     }
-  }
+  };
+
+  const handleSignout = async () => {
+    try {
+      const res = await fetch("/api/user/signout", {
+        method: "POST",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(data.message);
+      } else {
+        dispatch(signoutSuccess());
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   //   Occhio visibile/invisibile
   const [open, setOpen] = useState(false);
@@ -242,7 +260,9 @@ export default function DashProfile() {
         <span onClick={() => setShowModal(true)} className="cursor-pointer">
           Elimina Account
         </span>
-        <span className="cursor-pointer">Esci</span>
+        <span onClick={handleSignout} className="cursor-pointer">
+          Esci
+        </span>
       </div>
       {updateUserSuccess && (
         <Alert color="success" className="mt-5">
@@ -264,7 +284,7 @@ export default function DashProfile() {
         onClose={() => setShowModal(false)}
         popup
         size="md"
-       >
+      >
         <Modal.Header />
         <Modal.Body>
           <div className="text-center">
