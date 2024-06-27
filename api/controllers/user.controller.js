@@ -26,9 +26,9 @@ export const updateUser = async (req, res, next) => {
     if (req.body.username.includes(" ")) {
       return next(errorHandler(400, "Username non deve contenere spazi"));
     }
-    if (req.body.username !== req.body.username.toLowerCase()) {
-      return next(errorHandler(400, "Username must be lowercase"));
-    }
+    // if (req.body.username !== req.body.username.toLowerCase()) {
+    //   return next(errorHandler(400, "Username must be lowercase"));
+    // }
     if (!req.body.username.match(/^[a-zA-Z0-9]+$/)) {
       return next(
         errorHandler(400, "Username can only contain letters and numbers")
@@ -55,3 +55,17 @@ export const updateUser = async (req, res, next) => {
     }
   }
 };
+
+export const deleteUser =async (req,res, next)=>{
+  if(req.user.id !== req.params.userId){
+    return next(
+      errorHandler(403, "Non hai i permessi per eliminare questo utente")
+    );
+  }
+  try {
+    await User.findByIdAndDelete(req.params.userId);
+    res.status(200).json("Utente eliminato con successo!");
+  } catch (error) {
+    next(error);
+  }
+}
