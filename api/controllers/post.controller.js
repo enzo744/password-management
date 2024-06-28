@@ -3,7 +3,6 @@ import { errorHandler } from "../utils/error.js";
 import bcryptjs from "bcryptjs";
 
 export const create = async (req, res, next) => {
-    console.log(req.user);
 
   if (!req.user.isAdmin) {
     return next(errorHandler(403, "Non hai i permessi per creare il post"));
