@@ -17,12 +17,15 @@ import {
 import { app } from "../firebase";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import {useNavigate} from "react-router-dom";
 
 export default function CreatePost() {
   const [file, setFile] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
   const [formData, setFormData] = useState({});
+  const [publishError, setPublishError] = useState(null);
+  const navigate = useNavigate();
 
   const handleUploadImage = async () => {
     try {
@@ -42,6 +45,7 @@ export default function CreatePost() {
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           setImageUploadProgress(progress.toFixed(0));
         },
+        // eslint-disable-next-line no-unused-vars
         (error) => {
           setImageUploadError("Download immagine fallita!");
           setImageUploadProgress(null);
@@ -60,6 +64,32 @@ export default function CreatePost() {
       console.log(error);
     }
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("/api/post/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setPublishError(data.message);
+        return;
+      }
+
+      if (res.ok) {
+        setPublishError(null);
+        navigate(`/post/${data.slug}`);
+      }
+    } catch (error) {
+      setPublishError("Oooops! Qualcosa e' andato storto");
+    }
+  };
+
   const [open, setOpen] = useState(false);
   const toggle = () => {
     setOpen(!open);
@@ -68,7 +98,7 @@ export default function CreatePost() {
   return (
     <div className="p-3 max-w-3xl mx-auto min-h-screen">
       <h1 className="text-center text-3xl my-7 font-serif">Crea nuova voce</h1>
-      <form className="flex flex-col gap-4">
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4 sm:flex-row justify-between">
           <TextInput
             type="text"
@@ -76,8 +106,15 @@ export default function CreatePost() {
             required
             id="title"
             className="flex-1 "
+            onChange={(e) =>
+              setFormData({ ...formData, title: e.target.value })
+            }
           />
-          <Select>
+          <Select
+            onChange={(e) =>
+              setFormData({ ...formData, category: e.target.value })
+            }
+          >
             <option value="tutte">Tutte le categorie</option>
             <option value="personali">Personali</option>
             <option value="ufficio">Ufficio</option>
@@ -126,12 +163,18 @@ export default function CreatePost() {
             rows={4}
             placeholder="Inserire qualcosa per ricordare...."
             id="testolibero"
+            onChange={(e) =>
+              setFormData({ ...formData, testolibero: e.target.value })
+            }
           />
           <TextInput
             className="font-serif"
             type="email"
             placeholder="Inserire solo formato email (xxxx@dominio.com)"
             id="email"
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
           />
           <div className="relative text-2xl">
             <TextInput
@@ -139,6 +182,9 @@ export default function CreatePost() {
               type={open === false ? "password" : "text"}
               placeholder="Password"
               id="password"
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
             />
             <div className="absolute top-2 right-3">
               {open === false ? (
@@ -152,9 +198,14 @@ export default function CreatePost() {
             </div>
           </div>
         </div>
-        <Button type="button" gradientDuoTone="cyanToBlue" outline>
+        <Button type="submit" gradientDuoTone="cyanToBlue" outline>
           Salva dati
         </Button>
+        {publishError && (
+          <Alert className="mt-5" color="failure">
+            {publishError}
+          </Alert>
+        )}
       </form>
     </div>
   );
