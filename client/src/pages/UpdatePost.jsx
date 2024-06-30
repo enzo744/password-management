@@ -1,31 +1,54 @@
-import {
-  Alert,
-  Button,
-  FileInput,
-  Select,
-  TextInput,
-  Textarea,
-} from "flowbite-react";
-import { useState } from "react";
-import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
+import { Alert, Button, FileInput, Select, TextInput, Textarea } from "flowbite-react";
+import { useEffect, useState } from "react";
 import {
   getDownloadURL,
   getStorage,
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
+import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { app } from "../firebase";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-export default function CreatePost() {
+export default function UpdatePost() {
+    const [open, setOpen] = useState(false);
+  const toggle = () => {
+    setOpen(!open);
+  };
   const [file, setFile] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
   const [formData, setFormData] = useState({});
   const [publishError, setPublishError] = useState(null);
+  const { postId } = useParams();
+
   const navigate = useNavigate();
+  const { currentUser } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    try {
+      const fetchPost = async () => {
+        const res = await fetch(`/api/post/getposts?postId=${postId}`);
+        const data = await res.json();
+        if (!res.ok) {
+          console.log(data.message);
+          setPublishError(data.message);
+          return;
+        }
+        if (res.ok) {
+          setPublishError(null);
+          setFormData(data.posts[0]);
+        }
+      };
+
+      fetchPost();
+    } catch (error) {
+      console.log(error.message);
+    }
+  }, [postId]);
 
   const handleUploadImage = async () => {
     try {
@@ -47,7 +70,7 @@ export default function CreatePost() {
         },
         // eslint-disable-next-line no-unused-vars
         (error) => {
-          setImageUploadError("Download immagine fallita!");
+          setImageUploadError("Image upload failed");
           setImageUploadProgress(null);
         },
         () => {
@@ -59,7 +82,7 @@ export default function CreatePost() {
         }
       );
     } catch (error) {
-      setImageUploadError("Download immagine fallita!");
+      setImageUploadError("Image upload failed");
       setImageUploadProgress(null);
       console.log(error);
     }
@@ -68,52 +91,54 @@ export default function CreatePost() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/post/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const res = await fetch(
+        `/api/post/updatepost/${formData._id}/${currentUser._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
       const data = await res.json();
       if (!res.ok) {
         setPublishError(data.message);
         return;
       }
-
+      //   if (data.success === false) {
+      //     setPublishError(data.message);
+      //     return;
+      //   }
       if (res.ok) {
         setPublishError(null);
         navigate(`/post/${data.slug}`);
       }
     } catch (error) {
-      setPublishError("Oooops! Qualcosa e' andato storto");
+      setPublishError("Qualcosa e' andato storto");
     }
   };
-
-  const [open, setOpen] = useState(false);
-  const toggle = () => {
-    setOpen(!open);
-  };
-
   return (
     <div className="p-3 max-w-3xl mx-auto min-h-screen">
-      <h1 className="text-center text-3xl my-7 font-serif">Crea nuova voce</h1>
+      <h1 className="text-center text-3xl my-7 font-serif">Aggiornamento/Modifiche</h1>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4 sm:flex-row justify-between">
           <TextInput
             type="text"
-            placeholder="Nuova voce (campo obblig. ed univoco)*"
+            placeholder="Title"
             required
             id="title"
-            className="flex-1 "
+            className="flex-1"
             onChange={(e) =>
               setFormData({ ...formData, title: e.target.value })
             }
+            value={formData.title}
           />
           <Select
             onChange={(e) =>
               setFormData({ ...formData, category: e.target.value })
             }
+            value={formData.category}
           >
             <option value="tutte">Tutte le categorie</option>
             <option value="personali">Personali</option>
@@ -131,7 +156,7 @@ export default function CreatePost() {
           />
           <Button
             type="button"
-            gradientDuoTone="pinkToOrange"
+            gradientDuoTone="redToYellow"
             size="sm"
             outline
             onClick={handleUploadImage}
@@ -145,7 +170,7 @@ export default function CreatePost() {
                 />
               </div>
             ) : (
-              "Scarica immagine"
+              "Aggiorna immagine"
             )}
           </Button>
         </div>
@@ -157,7 +182,7 @@ export default function CreatePost() {
             className="w-full h-72 object-cover"
           />
         )}
-        <div className="flex flex-col gap-5 border-4 border-green-500    border-dotted p-3">
+        <div className="flex flex-col gap-5 border-4 border-yellow-400    border-dotted p-3">
           <Textarea
             className="font-serif"
             rows={4}
@@ -166,6 +191,7 @@ export default function CreatePost() {
             onChange={(e) =>
               setFormData({ ...formData, testolibero: e.target.value })
             }
+            value={formData.testolibero}
           />
           <TextInput
             className="font-serif"
@@ -175,6 +201,7 @@ export default function CreatePost() {
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
             }
+            value={formData.email}
           />
           <div className="relative text-2xl">
             <TextInput
@@ -185,6 +212,7 @@ export default function CreatePost() {
               onChange={(e) =>
                 setFormData({ ...formData, password: e.target.value })
               }
+              value={formData.password}
             />
             <div className="absolute top-2 right-3">
               {open === false ? (
@@ -198,8 +226,8 @@ export default function CreatePost() {
             </div>
           </div>
         </div>
-        <Button type="submit" gradientDuoTone="cyanToBlue" outline>
-          Salva dati
+        <Button type="submit" gradientDuoTone="greenToBlue" outline className="font-serif">
+          Aggiorna Post
         </Button>
         {publishError && (
           <Alert className="mt-5" color="failure">

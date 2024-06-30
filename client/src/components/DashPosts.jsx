@@ -42,9 +42,9 @@ export default function DashPosts() {
       const data = await res.json();
       if (res.ok) {
         setUserPosts((prev) => [...prev, ...data.posts]);
-      }
-      if (data.posts.length < 9) {
-        setShowMore(false);
+        if (data.posts.length < 9) {
+          setShowMore(false);
+        }
       }
     } catch (error) {
       console.log(error.message);
@@ -108,7 +108,7 @@ export default function DashPosts() {
               <Table.Row className="bg-gray-100 dark:border-gray-700 dark:bg-gray-800">
               {/* Data aggiornamento */}
                 <Table.Cell>
-                {new Date(post.updatedAt).toLocaleDateString()}
+                  {new Date(post.updatedAt).toLocaleDateString()}
                 </Table.Cell>
                 {/* Immagine */}
                 <Table.Cell>
