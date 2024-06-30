@@ -3,20 +3,19 @@ import { errorHandler } from "../utils/error.js";
 import bcryptjs from "bcryptjs";
 
 export const create = async (req, res, next) => {
-
   if (!req.user.isAdmin) {
     return next(errorHandler(403, "Non hai i permessi per creare il post"));
   }
   if (!req.body.title) {
     return next(errorHandler(400, "Il campo title e' obbligatorio ed univoco"));
   }
-//   const password = req.body.password;
-//   const hashedPassword = bcryptjs.hashSync(password, 10);
-//   password:hashedPassword;
+  //   const password = req.body.password;
+  //   const hashedPassword = bcryptjs.hashSync(password, 10);
+  //   password:hashedPassword;
 
   const slug = req.body.title
     .split(" ")
-    .join("-") 
+    .join("-")
     .toLowerCase()
     .replace(/[^a-zA-Z0-9-]/g, "");
 
@@ -34,35 +33,38 @@ export const create = async (req, res, next) => {
   }
 };
 
-export const getposts = async (req, res, next) =>{
+export const getposts = async (req, res, next) => {
   try {
     const startIndex = parseInt(req.query.startIndex) || 0;
     const limit = parseInt(req.query.limit) || 9;
     const sortDirection = req.query.order === "asc" ? 1 : -1;
     const posts = await Post.find({
-      ...(req.query.userId && {userId:req.query.userId}),
-      ...(req.query.category && {category:req.query.category}),
-      ...(req.query.sluq && {slug:req.query.slug}),
-      ...(req.query.postId && {_id:req.query.postId}),
+      ...(req.query.userId && { userId: req.query.userId }),
+      ...(req.query.category && { category: req.query.category }),
+      ...(req.query.sluq && { slug: req.query.slug }),
+      ...(req.query.postId && { _id: req.query.postId }),
       ...(req.query.searchTerm && {
         $or: [
-          {title: {$regex: req.query.searchTerm, $options: 'i'}},
-          {testolibero: {$regex: req.query.searchTerm, $options: 'i'}},
+          { title: { $regex: req.query.searchTerm, $options: "i" } },
+          { testolibero: { $regex: req.query.searchTerm, $options: "i" } },
         ],
       }),
-    }).sort({updateAt: sortDirection}).skip(startIndex).limit(limit);
+    })
+      .sort({ updateAt: sortDirection })
+      .skip(startIndex)
+      .limit(limit);
 
     const totalPosts = await Post.countDocuments();
     const now = new Date();
 
     const oneMonthAgo = new Date(
       now.getFullYear(),
-      now.getMonth() -1,
+      now.getMonth() - 1,
       now.getDate()
     );
 
     const lastMonthPosts = await Post.countDocuments({
-      createdAt: {$gte: oneMonthAgo},
+      createdAt: { $gte: oneMonthAgo },
     });
 
     res.status(200).json({
@@ -70,8 +72,21 @@ export const getposts = async (req, res, next) =>{
       totalPosts,
       lastMonthPosts,
     });
-    
   } catch (error) {
     next(error);
   }
-}
+};
+
+export const deletepost = async (req, res, next) => {
+  if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+    return next(
+      errorHandler(403, "Non hai i permessi per eliminare questo post")
+    );
+  }
+  try {
+    await Post.findByIdAndDelete(req.params.postId);
+    res.status(200).json("Il post e' stato eliminato");
+  } catch (error) {
+    next(error);
+  }
+};

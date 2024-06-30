@@ -17,6 +17,7 @@ const postSchema = new mongoose.Schema(
     },
     testolibero: {
       type: String,
+      default: "Scrivi qualcosa...",
     },
     email: {
       type: String,
