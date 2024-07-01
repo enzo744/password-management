@@ -23,17 +23,20 @@ export const updateUser = async (req, res, next) => {
     if (req.body.username.length < 5 || req.body.username.length > 20) {
       return next(errorHandler(400, "Username compreso tra 5 e 20 caratteri"));
     }
-    if (req.body.username.includes(" ")) {
-      return next(errorHandler(400, "Username non deve contenere spazi"));
-    }
+
+    // if (req.body.username.includes(" ")) {
+    //   return next(errorHandler(400, "Username non deve contenere spazi"));
+    // }
+
     // if (req.body.username !== req.body.username.toLowerCase()) {
     //   return next(errorHandler(400, "Username must be lowercase"));
     // }
-    if (!req.body.username.match(/^[a-zA-Z0-9]+$/)) {
-      return next(
-        errorHandler(400, "Username can only contain letters and numbers")
-      );
-    }
+
+    // if (!req.body.username.match(/^[a-zA-Z0-9]+$/)) {
+    //   return next(
+    //     errorHandler(400, "Username can only contain letters and numbers")
+    //   );
+    // }
 
     try {
       const updateUser = await User.findByIdAndUpdate(

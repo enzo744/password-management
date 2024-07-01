@@ -140,7 +140,7 @@ export default function DashPosts() {
                   {/* Icona Aggiorna voce */}
                   <Table.Cell>
                     <Link
-                      className="text-teal-600 hover:underline"
+                      className="text-teal-400 hover:underline"
                       to={`/update-post/${post._id}`}
                     >
                       <span>

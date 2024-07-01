@@ -35,8 +35,8 @@ export default function DashProfile() {
   const [updateUserError, setUpdateUserError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({});
-  const dispatch = useDispatch();
   const filePickerRef = useRef();
+  const dispatch = useDispatch();
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -104,19 +104,19 @@ export default function DashProfile() {
     setUpdateUserError(null);
     setUpdateUserSuccess(null);
     if (Object.keys(formData).length === 0) {
-      setUpdateUserError("No changes made");
+      setUpdateUserError("No changes mode");
       return;
     }
     if (imageFileUploading) {
-      setUpdateUserError("Please wait for image to upload");
+      setUpdateUserError('Please wait for image to upload');
       return;
     }
     try {
       dispatch(updateStart());
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
@@ -126,7 +126,7 @@ export default function DashProfile() {
         setUpdateUserError(data.message);
       } else {
         dispatch(updateSuccess(data));
-        setUpdateUserSuccess("Profilo utente aggiornato con successo!");
+        setUpdateUserSuccess("Users profile updated successfully");
       }
     } catch (error) {
       dispatch(updateFailure(error.message));
@@ -212,10 +212,13 @@ export default function DashProfile() {
             src={imageFileUrl || currentUser.profilePicture}
             alt="user"
             className={`rounded-full w-full h-full object-cover border-8 border-[lightgray] $
-            {imageFileUploadProgress && imageFileUploadProgress < 100 && 'opacity-60'}`}
+            {imageFileUploadProgress && 
+            imageFileUploadProgress < 100 && 'opacity-60'}`}
           />
         </div>
-        {imageFileUploadError && <Alert color="failure">{}</Alert>}
+        {imageFileUploadError && (
+          <Alert color="failure">{imageFileUploadError}</Alert>
+          )}
 
         <TextInput
           type="text"
@@ -236,6 +239,7 @@ export default function DashProfile() {
             className="w-full font-serif"
             type={open === false ? "password" : "text"}
             placeholder="Password"
+            defaultValue={currentUser.password}
             id="password"
             onChange={handleChange}
           />
@@ -248,28 +252,27 @@ export default function DashProfile() {
           </div>
         </div>
 
-        <Button
-          className="font-serif"
+        <Button className="font-serif"
           type="submit"
           gradientDuoTone="tealToLime"
           outline
           disabled={loading || imageFileUploading}
-        >
+         >
           {loading ? "Loading..." : "Aggiorna profilo"}
         </Button>
-        {
-          currentUser.isAdmin && (
-            <Link to={'/create-post'}>
-              <Button
+
+        {currentUser.isAdmin && (
+          <Link to={"/create-post"}>
+            <Button
               type="button"
-              gradientDuoTone='greenToBlue'
+              gradientDuoTone="greenToBlue"
               className="w-full font-serif"
-              outline>
-                  Crea nuova voce
-              </Button>
-            </Link>
-          )
-        }
+              outline
+            >
+              Crea nuova voce
+            </Button>
+          </Link>
+        )}
       </form>
       <div className="text-red-500 flex justify-between mt-4">
         <span onClick={() => setShowModal(true)} className="cursor-pointer">
@@ -280,17 +283,17 @@ export default function DashProfile() {
         </span>
       </div>
       {updateUserSuccess && (
-        <Alert color="success" className="mt-5">
+        <Alert color='success' className='mt-5'>
           {updateUserSuccess}
         </Alert>
       )}
       {updateUserError && (
-        <Alert color="failure" className="mt-5">
+        <Alert color='failure' className='mt-5'>
           {updateUserError}
         </Alert>
       )}
       {error && (
-        <Alert color="failure" className="mt-5">
+        <Alert color='failure' className='mt-5'>
           {error}
         </Alert>
       )}
