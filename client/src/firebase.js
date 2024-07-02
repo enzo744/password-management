@@ -3,14 +3,14 @@ import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
+// Your web app's Firebase configuration 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: "password-manager-a7635.firebaseapp.com",
-  projectId: "password-manager-a7635",
-  storageBucket: "password-manager-a7635.appspot.com",
-  messagingSenderId: "743472967042",
-  appId: "1:743472967042:web:61dd66eeb76efbf0faf39b"
+  authDomain: "gestione-campi.firebaseapp.com",
+  projectId: "gestione-campi",
+  storageBucket: "gestione-campi.appspot.com",
+  messagingSenderId: "760760248337",
+  appId: "1:760760248337:web:a9852b6fa3871ec42ea9b0"
 };
 
 // Initialize Firebase

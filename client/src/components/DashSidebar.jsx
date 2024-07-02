@@ -1,12 +1,12 @@
 import { Sidebar } from "flowbite-react";
 import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   HiArrowSmRight,
   HiDocumentText,
   HiUser,
   HiOutlineUserGroup,
 } from "react-icons/hi";
-import { Link, useLocation } from "react-router-dom";
 import { signoutSuccess } from "../redux/user/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 

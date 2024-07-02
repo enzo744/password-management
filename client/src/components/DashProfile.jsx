@@ -37,6 +37,7 @@ export default function DashProfile() {
   const [formData, setFormData] = useState({});
   const filePickerRef = useRef();
   const dispatch = useDispatch();
+  
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -173,7 +174,7 @@ export default function DashProfile() {
   const toggle = () => {
     setOpen(!open);
   };
-
+  // -----------------------------------GRAFICA UI ------------------------------------
   return (
     <div className="max-w-lg mx-auto p-3 w-full">
       <h1 className="my-7 text-center font-serif text-3xl">Profile</h1>
@@ -188,7 +189,7 @@ export default function DashProfile() {
         <div
           className="relative w-32 h-32 self-center cursor-pointer shadow-md overflow-hidden rounded-full"
           onClick={() => filePickerRef.current.click()}
-        >
+         >
           {imageFileUploadProgress && (
             <CircularProgressbar
               value={imageFileUploadProgress || 0}
@@ -208,12 +209,15 @@ export default function DashProfile() {
               }}
             />
           )}
+
           <img
             src={imageFileUrl || currentUser.profilePicture}
-            alt="user"
-            className={`rounded-full w-full h-full object-cover border-8 border-[lightgray] $
-            {imageFileUploadProgress && 
-            imageFileUploadProgress < 100 && 'opacity-60'}`}
+            alt='user'
+            className={`rounded-full w-full h-full object-cover border-8 border-[lightgray] ${
+              imageFileUploadProgress &&
+              imageFileUploadProgress < 100 &&
+              'opacity-60'
+            }`}
           />
         </div>
         {imageFileUploadError && (
@@ -238,9 +242,9 @@ export default function DashProfile() {
           <TextInput
             className="w-full font-serif"
             type={open === false ? "password" : "text"}
-            placeholder="Password"
-            defaultValue={currentUser.password}
             id="password"
+            placeholder="Password"
+            // defaultValue="********"
             onChange={handleChange}
           />
           <div className="absolute top-2 right-3">
