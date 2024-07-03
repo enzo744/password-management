@@ -15,9 +15,10 @@ export default function DashSidebar() {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
   const [tab, setTab] = useState("");
+
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
-    const tabFromUrl = urlParams.get("tab");
+    const tabFromUrl = urlParams.get('tab');
     if (tabFromUrl) {
       setTab(tabFromUrl);
     }
@@ -25,8 +26,8 @@ export default function DashSidebar() {
 
   const handleSignout = async () => {
     try {
-      const res = await fetch("/api/user/signout", {
-        method: "POST",
+      const res = await fetch('/api/user/signout', {
+        method: 'POST',
       });
       const data = await res.json();
       if (!res.ok) {
@@ -38,28 +39,29 @@ export default function DashSidebar() {
       console.log(error.message);
     }
   };
+
   return (
     <Sidebar className="w-full md:w-56">
       <Sidebar.Items>
         <Sidebar.ItemGroup className="flex flex-col gap-1">
-          <Link to="/dashboard?tab=profile">
+        <Link to='/dashboard?tab=profile'>
             <Sidebar.Item
-              active={tab === "profile"}
+              active={tab === 'profile'}
               icon={HiUser}
-              label={currentUser.isAdmin ? "Admin" : "User"}
-              labelColor="dark"
-              as="div"
+              label={currentUser.isAdmin ? 'Admin' : 'User'}
+              labelColor='dark'
+              as='div'
             >
               Profile
             </Sidebar.Item>
           </Link>
           {/* Posts */}
           {currentUser.isAdmin && (
-            <Link to="/dashboard?tab=posts">
+            <Link to='/dashboard?tab=posts'>
               <Sidebar.Item
-                active={tab === "posts"}
+                active={tab === 'posts'}
                 icon={HiDocumentText}
-                as="div"
+                as='div'
               >
                 Posts
               </Sidebar.Item>
@@ -67,15 +69,17 @@ export default function DashSidebar() {
           )}
           {/* Users */}
           {currentUser.isAdmin && (
-            <Link to="/dashboard?tab=users">
-              <Sidebar.Item
-                active={tab === "users"}
-                icon={HiOutlineUserGroup}
-                as="div"
-              >
-                Users
-              </Sidebar.Item>
-            </Link>
+            <>
+              <Link to='/dashboard?tab=users'>
+                <Sidebar.Item
+                  active={tab === 'users'}
+                  icon={HiOutlineUserGroup}
+                  as='div'
+                >
+                  Users
+                </Sidebar.Item>
+              </Link>
+            </>
           )}
           <Sidebar.Item
             icon={HiArrowSmRight}

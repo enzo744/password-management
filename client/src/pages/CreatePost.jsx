@@ -176,7 +176,7 @@ export default function CreatePost() {
               setFormData({ ...formData, email: e.target.value })
             }
           />
-          <div className="relative text-2xl">
+          <div className="relative text-2xl"> 
             <TextInput
               className="font-serif max-w-full"
               type={open === false ? "password" : "text"}
