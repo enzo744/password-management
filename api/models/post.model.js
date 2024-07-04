@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const postSchema = new mongoose.Schema(
   {
@@ -27,6 +28,7 @@ const postSchema = new mongoose.Schema(
       type: String,
       default: "xxxxxx",
     },
+    
     image: {
       type: String,
       default:
@@ -40,6 +42,26 @@ const postSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Encrypt password before saving
+postSchema.pre("save", function(next){
+  if(this.isModified("password")){
+    this.password =  bcrypt.hashSync(this.password, 10);
+    }
+    next()
+});
+
+// postSchema.methods.toJSON = function(){
+//   const obj = this.toObject();
+//    delete obj.password;
+//    obj.confirmPassword
+//   return obj;
+// }
+
+// Verify password 
+// postSchema.methods.comparePassword = async function(yourPassword){
+//   return await bcryptjs.compare(yourPassword, this.password);
+// }
 
 const Post = mongoose.model("Post", postSchema);
 

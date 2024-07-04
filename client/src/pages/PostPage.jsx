@@ -67,6 +67,7 @@ export default function PostPage() {
         </span>
         <span>{post && post.email}</span>
         <span>{post && post.password}</span>
+        <span>{post && post.confirmPassword}</span>
         <span>{post && post.testolibero}</span>
       </div>
       <div className="self-center mt-5">

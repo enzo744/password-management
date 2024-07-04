@@ -1,6 +1,5 @@
 import Post from "../models/post.model.js";
 import { errorHandler } from "../utils/error.js";
-import bcryptjs from "bcryptjs";
 
 export const create = async (req, res, next) => {
   if (!req.user.isAdmin) {
@@ -9,9 +8,6 @@ export const create = async (req, res, next) => {
   if (!req.body.title) {
     return next(errorHandler(400, "Il campo title e' obbligatorio ed univoco"));
   }
-  //   const password = req.body.password;
-  //   const hashedPassword = bcryptjs.hashSync(password, 10);
-  //   password:hashedPassword;
 
   const slug = req.body.title
     .split(" ")

@@ -203,12 +203,14 @@ export default function UpdatePost() {
             }
             value={formData.email}
           />
-          <div className="relative text-2xl">
+          {/* <div className="relative text-2xl">
             <TextInput
               className="font-serif max-w-full"
               type={open === false ? "password" : "text"}
               placeholder="Password"
+              
               id="password"
+              
               onChange={(e) =>
                 setFormData({ ...formData, password: e.target.value })
               }
@@ -224,7 +226,8 @@ export default function UpdatePost() {
                 />
               )}
             </div>
-          </div>
+          </div> */}
+          
         </div>
         <Button type="submit" gradientDuoTone="greenToBlue" outline className="font-serif">
           Aggiorna Post
