@@ -2,12 +2,14 @@ import { Button, Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { HiOutlineArrowLeft } from "react-icons/hi";
+import PostCard from "../components/PostCard";
 
 export default function PostPage() {
   const { postSlug } = useParams();
   const [loading, setLoading] = useState(true);
   const [setError] = useState(false);
   const [post, setPost] = useState(null);
+  const [recentPosts, setRecentPosts] = useState(null);
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -32,6 +34,22 @@ export default function PostPage() {
     };
     fetchPost();
   }, [postSlug]);
+
+  useEffect(() => {
+    try {
+      const fetchRecentPosts = async () => {
+        const res = await fetch(`/api/post/getposts?limit=3`);
+        const data = await res.json();
+        if (res.ok) {
+          setRecentPosts(data.posts);
+        }
+      };
+      fetchRecentPosts();
+    } catch (error) {
+      console.log(error.message);
+    }
+  }, []);
+
   if (loading)
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -43,14 +61,20 @@ export default function PostPage() {
       <h1 className="text-3xl mt-10 p-3 text-center font-serif max-w-2xl mx-auto lg:text-4xl">
         {post && post.title}
       </h1>
-      <Link
-        to={`/search?category=${post && post.category}`}
-        className="self-center mt-5"
-      >
-        <Button color="gray" pill size="xs">
-          {post && post.category}
-        </Button>
-      </Link>
+      <div className="flex flex-row self-center mt-5 gap-5 ">
+        <Link to="/dashboard?tab=posts">
+          <Button outline gradientDuoTone="pinkToOrange" type="submit">
+            <HiOutlineArrowLeft className="h-4 w-4" />
+          </Button>
+        </Link>
+        <div className="">
+          <Link to={`/search?category=${post && post.category}`}>
+            <Button color="gray" size="sm">
+              {post && post.category}
+            </Button>
+          </Link>
+        </div>
+      </div>
       <img
         src={post && post.image}
         alt={post && post.title}
@@ -65,17 +89,17 @@ export default function PostPage() {
           Data agg.mento:{" "}
           {post && new Date(post.updatedAt).toLocaleDateString()}
         </span>
-        <span>{post && post.email}</span>
-        <span>{post && post.password}</span>
-        <span>{post && post.confirmPassword}</span>
-        <span>{post && post.testolibero}</span>
+        <span>Email: {post && post.email}</span>
+        <span>Psw: {post && post.password}</span>
+        <span>Commento: {post && post.testolibero}</span>
       </div>
-      <div className="self-center mt-5">
-        <Link to="/dashboard?tab=posts">
-          <Button outline gradientDuoTone="pinkToOrange" type="submit">
-            <HiOutlineArrowLeft className="h-5 w-5" />
-          </Button>
-        </Link>
+
+      <div className="flex flex-col  mt-5 items-center">
+        <h1 className="text-3xl p-7 items-center">Post recenti</h1>
+        <div className="flex flex-row ">
+          {recentPosts &&
+            recentPosts.map((post) => <PostCard  key={post._id} post={post} />)}
+        </div>
       </div>
     </main>
   );

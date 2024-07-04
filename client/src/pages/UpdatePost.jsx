@@ -6,7 +6,7 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
+// import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { app } from "../firebase";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -14,10 +14,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 export default function UpdatePost() {
-    const [open, setOpen] = useState(false);
-  const toggle = () => {
-    setOpen(!open);
-  };
+    // const [open, setOpen] = useState(false);
+  // const toggle = () => {
+  //   setOpen(!open);
+  // };
   const [file, setFile] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
