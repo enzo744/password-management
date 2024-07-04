@@ -94,9 +94,9 @@ export default function PostPage() {
         <span>Commento: {post && post.testolibero}</span>
       </div>
 
-      <div className="flex flex-col  mt-5 items-center">
-        <h1 className="text-3xl p-7 items-center">Post recenti</h1>
-        <div className="flex flex-row ">
+      <div className="flex flex-col  mb-5 items-center justify-center">
+        <h1 className="text-3xl mt-5 items-center">Post recenti</h1>
+        <div className="flex flex-wrap gap-5 mt-5 justify-center" >
           {recentPosts &&
             recentPosts.map((post) => <PostCard  key={post._id} post={post} />)}
         </div>
