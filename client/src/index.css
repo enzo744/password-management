@@ -1,3 +1,122 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"); */
+
+/* Global styles */
+
+/* * {
+  font-family: "Poppins", sans-serif;
+  padding: 0;
+  margin: 0;
+  outline: none; 
+ }  */
+
+/* Container styles */
+/* .container {
+    width:100vw;
+    height:100vh; 
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    background-color: #eff2f5;
+
+} */
+
+/* Button styles */
+.btn {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #0d315d;
+  border: none;
+  padding: 0.5rem 3.5rem;
+  background-color: #bcd7f8;
+}
+
+.btn-left {
+  border-radius: 0.4rem 0 0 0.4rem;
+}
+
+.btn-right {
+  border-radius: 0 0.4rem 0.4rem 0;
+}
+
+.active {
+  color: #ffffff;
+  background-color: #207ae8;
+}
+
+/* Card styles */
+.card {
+    /* justify-content:center; */
+  width: 21rem;
+  display: flex;
+  flex-direction: column;
+  background-color: #fffff3;
+  border-radius: 0.4rem;
+  padding: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Textarea styles */
+textarea{
+    min-height:100px;
+    font-size:0.9rem;
+    font-weight:400;
+    background-color: #fffff3;
+    border:2px solid #d2e4fa;
+    border-radius: 0.4rem;
+    padding:0.5rem 0.9rem;
+}
+
+textarea::placeholder {
+    color:blue;
+}
+
+/* Submit button styles */
+.submit-btn {
+    border-radius: 0.4rem;
+    margin-top:1rem;
+}
+
+.encrypt-btn {
+    color:#d1d1d1;
+    background-color:#207ae8;
+}
+.decrypt-btn {
+    color:#d1d1d1;
+    background-color:#e53471;
+}
+
+.error{
+    font-size:12px;
+    font-weight:500;
+    color:#ff0000;
+    margin-top:10px;
+}
+
+/* Content display styles */
+.content{
+    width:26rem;
+    margin-top:2rem;
+    border:2px dashed #bababa;
+    padding:1rem;
+    border-radius: 0.5rem;
+}
+
+label{
+    font-size:0.8rem;
+    font-weight:500;
+    color:#a2a2a2;
+}
+
+p{
+    font-size:1rem;
+    font-weight:500;
+    margin-top:0.5rem;
+    color:#a2a2a2;
+    white-space:pre-wrap;
+    word-wrap:break-word;
+}

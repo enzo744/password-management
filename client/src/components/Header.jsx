@@ -4,7 +4,7 @@ import {
   Dropdown,
   Navbar,
   TextInput,
-} from "flowbite-react";
+} from "flowbite-react"; 
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon, FaSun } from "react-icons/fa";

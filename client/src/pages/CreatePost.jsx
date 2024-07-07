@@ -13,12 +13,15 @@ import {
   getDownloadURL,
   getStorage,
   ref,
-  uploadBytesResumable, 
+  uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useNavigate } from "react-router-dom";
+import CryptoJS from "crypto-js";
+
+const SECRET_PASS = import.meta.env.VITE_SECRET_PASS
 
 export default function CreatePost() {
   const [file, setFile] = useState(null);
@@ -94,6 +97,67 @@ export default function CreatePost() {
   const [open, setOpen] = useState(false);
   const toggle = () => {
     setOpen(!open);
+  };
+
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [screen, setScreen] = useState("encrypt");
+  const [text, setText] = useState("");
+
+  // Store Encrypted data
+  const [encryptedData, setEncryptedData] = useState("");
+
+  // Store Decrypted data
+  const [decryptedData, setDecryptedData] = useState("");
+
+  // Switch between encrypt and decrypt screens
+  const switchScreen = (type) => {
+    setScreen(type);
+    // Clear all data and error message when switching screens
+    setText("");
+    setEncryptedData("");
+    setDecryptedData("");
+    setErrorMessage("");
+  };
+
+  // Encrypt user input text
+  const encryptData = () => {
+    try {
+      const data = CryptoJS.AES.encrypt(
+        JSON.stringify(text),
+        SECRET_PASS
+      ).toString();
+      setEncryptedData(data);
+      setErrorMessage("");
+    } catch (error) {
+      setErrorMessage("Encryption fallita. Controlla il tuo input!");
+    }
+  };
+
+  // Decrypt user input text
+  const decryptData = () => {
+    try {
+      const bytes = CryptoJS.AES.decrypt(text, SECRET_PASS);
+      const data =JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+      setDecryptedData(data);
+      setErrorMessage("");
+    } catch (error) {
+      setErrorMessage("Decryption fallita. Controlla il tuo input!");
+    }
+  };
+
+  // Handle button click (Encrypt or Decript)
+  const handleClick = () => {
+    if (!text) {
+      setErrorMessage("Please enter some text");
+      return;
+    }
+
+    if (screen === "encrypt") {
+      encryptData();
+    } else {
+      decryptData();
+    }
   };
 
   return (
@@ -177,7 +241,7 @@ export default function CreatePost() {
               setFormData({ ...formData, email: e.target.value })
             }
           />
-          <div className="relative text-2xl"> 
+          <div className="relative text-2xl">
             <TextInput
               className="font-serif max-w-full"
               type={open === false ? "password" : "text"}
@@ -198,8 +262,68 @@ export default function CreatePost() {
               )}
             </div>
           </div>
-          
         </div>
+        {/* -------------- Encrypt and Decrypt --------------- */}
+        <div className="self-center">
+          <div>
+            {/* Buttons to switch between Encrypt and Decrypt screens */}
+            <span
+              className={`btn btn-left ${screen === "encrypt" ? "active" : ""} cursor-pointer`}
+              onClick={() => {
+                switchScreen("encrypt");
+              }}
+            >
+              Encrypt
+            </span>
+            <span
+              className={`btn btn-right ${
+                screen === "decrypt" ? "active" : ""
+              } cursor-pointer`}
+              onClick={() => {
+                switchScreen("decrypt");
+              }}
+            >
+              Decrypt
+            </span>
+          </div>
+
+          <div className="card">
+            {/* Textarea for user input  */}
+            <textarea
+              value={text}
+              onChange={({ target }) => setText(target.value)}
+              placeholder={
+                screen === "encrypt"
+                  ? "Enter your text... "
+                  : "Enter Encrypted Data"
+              }
+            />
+
+            {/* Display error message if there is an error */}
+            {errorMessage && <div className="error">{errorMessage}</div>}
+
+            {/* Encrypt or Decrypt button */}
+            <span
+              className={`btn submit-btn ${
+                screen === "encrypt" ? "encrypt-btn" : "decrypt-btn"
+              } cursor-pointer`}
+              onClick={handleClick}
+            >
+              {screen === "encrypt" ? "Encrypt" : "Decript"}
+            </span>
+          </div>
+
+          {/* Display Encrypted or Decrypted data if available */}
+          {encryptedData || decryptedData ? (
+            <div className="content">
+              <label>
+                {screen === "encrypt" ? "ENCRYPTED" : "Decrypted"} DATA
+              </label>
+              <p>{screen === "encrypt" ? encryptedData : decryptedData}</p>
+            </div>
+          ) : null}
+        </div>
+
         <Button type="submit" gradientDuoTone="cyanToBlue" outline>
           Salva dati
         </Button>

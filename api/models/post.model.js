@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
+// import bcrypt from "bcryptjs";
 
 const postSchema = new mongoose.Schema(
   {
@@ -44,12 +44,12 @@ const postSchema = new mongoose.Schema(
 );
 
 // Encrypt password before saving
-postSchema.pre("save", function(next){
-  if(this.isModified("password")){
-    this.password =  bcrypt.hashSync(this.password, 10);
-    }
-    next()
-});
+// postSchema.pre("save", function(next){
+//   if(this.isModified("password")){
+//     this.password =  bcrypt.hashSync(this.password, 10);
+//     }
+//     next()
+// });
 
 // postSchema.methods.toJSON = function(){
 //   const obj = this.toObject();
